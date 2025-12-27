@@ -39,13 +39,25 @@ cloudinary.config({
 // Firebase Admin Setup
 // ============================================
 
-const serviceAccount = require('./serviceAccountKey.json');
+// ============================================
+// Firebase Admin Setup (Render-safe)
+// ============================================
+
+let serviceAccount;
+
+try {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+} catch (err) {
+  console.error("❌ Failed to load FIREBASE_SERVICE_ACCOUNT");
+  throw err;
+}
 
 admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount)
+  credential: admin.credential.cert(serviceAccount),
 });
 
 const db = admin.firestore();
+
 
 // ============================================
 // Gemini AI Setup
