@@ -11,15 +11,35 @@ import requests
 from io import BytesIO
 import firebase_admin
 from firebase_admin import credentials, firestore
+import os
+import json
 
 app = Flask(__name__)
 
 # Initialize Firebase
+# try:
+#     cred = credentials.Certificate('serviceAccountKey.json')
+#     firebase_admin.initialize_app(cred)
+#     db = firestore.client()
+#     print("Firebase initialized successfully!")
+# except Exception as e:
+#     print(f"Firebase initialization error: {e}")
+#     db = None
+
 try:
-    cred = credentials.Certificate('serviceAccountKey.json')
+    service_account_json = os.getenv("FIREBASE_SERVICE_ACCOUNT")
+
+    if not service_account_json:
+        raise Exception("FIREBASE_SERVICE_ACCOUNT env variable not set")
+
+    cred_dict = json.loads(service_account_json)
+    cred = credentials.Certificate(cred_dict)
+
     firebase_admin.initialize_app(cred)
     db = firestore.client()
-    print("Firebase initialized successfully!")
+
+    print("Firebase initialized successfully via ENV!")
+
 except Exception as e:
     print(f"Firebase initialization error: {e}")
     db = None
