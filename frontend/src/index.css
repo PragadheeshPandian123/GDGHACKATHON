@@ -1,0 +1,5 @@
+@import "tailwindcss";
+
+.auth-input {
+  @apply w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-violet-500;
+}
