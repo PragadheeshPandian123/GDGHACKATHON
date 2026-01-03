@@ -49,6 +49,7 @@ print("Loading models...")
 text_model = SentenceTransformer('all-MiniLM-L6-v2')
 image_model = SentenceTransformer('clip-ViT-B-32')
 print("Models loaded successfully!")
+print("Python AI URL:", os.getenv("PYTHON_AI_URL"))
 
 # Configuration
 TEXT_WEIGHT = 0.3
