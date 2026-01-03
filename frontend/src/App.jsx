@@ -14,9 +14,11 @@ import EditProfile from "./pages/EditProfile";
 import ReportLostItem from "./pages/ReportLostItem";
 import ReportFoundItem from "./pages/ReportFoundItem";
 import Matches from "./pages/Matches";
+import MyItems from "./pages/MyItems";
 import Notifications from "./pages/Notifications";
 import DashboardOverview from "./pages/DashboardOverview";
-
+import Chats from "./pages/Chats";
+import ChatRoom from "./pages/ChatRoom";
 // Admin
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -47,6 +49,9 @@ export default function App() {
             <Route path="lost/report" element={<ReportLostItem />} />
             <Route path="found/report" element={<ReportFoundItem />} />
             <Route path="matches" element={<Matches />} />
+            <Route path="my-items" element={<MyItems />} />
+            <Route path="chats" element={<Chats />} />
+            <Route path="chat/:chatId" element={<ChatRoom />} />
             <Route path="notifications" element={<Notifications />} />
           </Route>
 

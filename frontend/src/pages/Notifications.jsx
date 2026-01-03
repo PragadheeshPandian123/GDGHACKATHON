@@ -13,13 +13,16 @@ export default function Notifications() {
   const { enqueueSnackbar } = useSnackbar();
 
   // 🕒 Format Firestore timestamp
-  const formatTime = (timestamp) => {
-    if (!timestamp) return "";
-    const date = timestamp.seconds
-      ? new Date(timestamp.seconds * 1000)
-      : new Date(timestamp);
-    return date.toLocaleString();
-  };
+  const formatTime = (created_at) => {
+  if (!created_at) return "";
+
+  if (created_at.seconds) {
+    return new Date(created_at.seconds * 1000).toLocaleString();
+  }
+
+  return new Date(created_at).toLocaleString();
+};
+
 
   // 🔔 Fetch notifications
   const fetchNotifications = async () => {
@@ -75,9 +78,56 @@ export default function Notifications() {
     }
   };
 
+  const deleteAllNotifications = async () => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+    console.log(backendUrl);
+    await axios.delete(
+      `${backendUrl}/api/notifications/delete-all`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    setNotifications([]);
+    enqueueSnackbar("All notifications deleted", { variant: "success" });
+  } catch (err) {
+    console.error(err);
+    enqueueSnackbar("Failed to delete notifications", {
+      variant: "error",
+    });
+  }
+};
+
   useEffect(() => {
     fetchNotifications();
   }, []);
+
+  const markAllAsRead = async () => {
+  try {
+    const token = await auth.currentUser.getIdToken();
+
+    await axios.patch(
+      `${backendUrl}/api/notifications/read-all`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setNotifications(prev =>
+      prev.map(n => ({ ...n, read: true }))
+    );
+
+    enqueueSnackbar("All notifications marked as read", {
+      variant: "success",
+    });
+  } catch (err) {
+    enqueueSnackbar("Failed to mark all as read", {
+      variant: "error",
+    });
+  }
+};
 
   return (
     <div>
@@ -86,6 +136,36 @@ export default function Notifications() {
       <h1 className="text-3xl font-bold text-white mb-6">
         Notifications
       </h1>
+      
+{notifications.length > 0 && (
+  <div className="flex items-center justify-between mb-6 gap-4">
+    
+    {/* Left side */}
+    <div>
+      {notifications.some(n => !n.read) && (
+        <button
+          onClick={markAllAsRead}
+          className="text-sm bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 rounded-lg transition"
+        >
+          Mark all as read
+        </button>
+      )}
+    </div>
+
+    {/* Right side */}
+    <div>
+      <button
+        onClick={deleteAllNotifications}
+        className="text-sm bg-gray-700 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition"
+      >
+        Delete all
+      </button>
+    </div>
+
+  </div>
+)}
+
+
 
       <div className="space-y-4">
         {/* Notifications */}
