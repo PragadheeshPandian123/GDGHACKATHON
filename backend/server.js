@@ -23,7 +23,7 @@ const PORT = process.env.PORT || 3000;
 
 // Create HTTP server for Socket.IO
 const server = http.createServer(app);
-console.log("Python AI URL:", process.env.PYTHON_AI_URL);
+console.log("Python AI URL:", process.env.PYTHON_SERVER);
 
 // ============================================
 // CORS Configuration for Production
